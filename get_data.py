@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 26 17:01:54 2018
-
-@author: mariafranciscapessanha
-"""
-
 import os
 import numpy as np
 import cv2 as cv
@@ -122,7 +114,7 @@ Arguments:
 Returns:
     * resized_set : resized dataset
 """  
-def resize_images(set_, h_size = 50, w_size = 100):
+def resize_images(set_, h_size = 224, w_size = 224): #shape images ImageNet
     resized_set = []
     
     
@@ -130,15 +122,16 @@ def resize_images(set_, h_size = 50, w_size = 100):
     
     for image in set_:
         h, w, _ = image.shape
-        for scale in np.arange(1.0, 0.0, -0.005):
+        for scale in np.arange(2.0, 0.0, -0.005):
             if w * scale <= w_size and h * scale <= h_size:
                 break
         image = cv.resize(image, (0,0), fx=scale, fy=scale) 
         new_h, new_w, h = image.shape
-        
+                
         if (h_size - new_h) % 2 == 0: # height is even
             b_top = int((h_size - new_h) /2)
             b_bot = b_top
+            
         else:
             b_top = int((h_size - new_h) / 2)
             b_bot = int(h_size - new_h - b_top)
@@ -149,8 +142,8 @@ def resize_images(set_, h_size = 50, w_size = 100):
         else:
             b_left= int((w_size - new_w)/2)
             b_right = int((w_size - new_w) - b_left)
-
-        resized_set.append(cv.copyMakeBorder(image, top = b_top,bottom = b_bot, left = b_left, right = b_right, borderType = cv.BORDER_CONSTANT, value = [0,0,0]))
+            
+        resized_set.append(cv.copyMakeBorder(image, top = b_top,bottom = b_bot, left = b_left, right = b_right, borderType = cv.BORDER_CONSTANT, value = [0,0,0]))   
     return resized_set
 
 """
@@ -214,7 +207,9 @@ def normalize_data(set_, mean, std):
     blue = [(b - mean[0])/std[0] for b in blue]
     green = [(g - mean[1])/std[1] for g in green]
     red = [(r - mean[2])/std[2] for r in red]
-    set_ = [np.concatenate((b,g,r)) for b,g,r in zip(blue,green,red)]
+
+    set_ = [cv.merge((b,g,r)) for b,g,r in zip(blue,green,red)]
+    
     return set_
 
 """
@@ -304,6 +299,6 @@ def get_data(mode = "default"):
             
     return x_train, y_train, x_val, y_val, x_test, y_test
 
-x_train, y_train, x_val, y_val, x_test, y_test = get_data("cross_val")
+x_train, y_train, x_val, y_val, x_test, y_test = get_data()
 
 
