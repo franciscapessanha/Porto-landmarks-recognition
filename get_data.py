@@ -99,6 +99,7 @@ Returns:
 def load_data(x):
     loaded_x = []
     for i in range(len(x)):
+        print(x[i])
         loaded_x.append(cv.imread(x[i][0]))   
     return loaded_x
 
@@ -213,6 +214,45 @@ def normalize_data(set_, mean, std):
     return set_
 
 """
+Save Data
+==============================================================================
+Saves the images in folders, organized by dataset and class
+
+Arguments:
+    * set_: image dataset
+    * y: image labels
+    * folder_name: name of the dataset
+"""
+def save_data(set_, y, folder_name):
+    for image, label in zip(set_,y):
+        d0 = 0
+        d1 = 0
+        d2 = 0
+        d3 = 0
+        d4 = 0
+        
+        if label == 0: #arrabida
+            filename = (folder_name + "/arrabida/arrabida_%d.jpg") % d0
+            cv.imwrite(filename, image)
+            d0 += 1
+        elif label == 1: #camara
+            filename = (folder_name + "/camara/camara_%d.jpg") % d1
+            cv.imwrite(filename, image)
+            d1 += 1
+        elif label == 2: #clerigos
+            filename = (folder_name + "/clerigos/clerigos_%d.jpg") % d2
+            cv.imwrite(filename, image)
+            d2 += 1
+        elif label == 3: #musica
+            filename = (folder_name + "/musica/musica_%d.jpg") % d3
+            cv.imwrite(filename, image)
+            d3 += 1
+        elif label == 4: #serralves
+            filename = (folder_name + "/serralves/serralves_%d.jpg") % d4
+            cv.imwrite(filename, image)
+            d4 += 1
+            
+"""
 Get Data
 ==============================================================================
 Returns datasets after resizing and data normalization.
@@ -235,8 +275,7 @@ Returns:
         * y_val: list with 5 different set of labels of the validation set
         * x_test: list with the images of the test set
         * y_test: list with the labels of the test set
-"""
-   
+"""            
 def get_data(mode = "default"):
     curr_path = os.getcwd()
     
@@ -297,6 +336,10 @@ def get_data(mode = "default"):
             x_val.append(xi_val)
             x_test.append(xi_test)
             
+            save_data(x_train, y_train, "train")
+            save_data(x_val, y_val, "val")
+            save_data(x_test, y_test, "test")
+
     return x_train, y_train, x_val, y_val, x_test, y_test
 
 x_train, y_train, x_val, y_val, x_test, y_test = get_data()

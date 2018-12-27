@@ -6,11 +6,15 @@ from keras.layers import Dropout, Flatten, Dense, GlobalAveragePooling2D
 from keras import backend as k 
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 
-img_width, img_height = 256, 256
-train_data_dir = "data/train"
-validation_data_dir = "data/val"
-nb_train_samples = 4125
-nb_validation_samples = 466 
+
+
+x_train, y_train, x_val, y_val, x_test, y_test = get_data()
+img_width, img_height = 224, 224
+train_data_dir = 
+validation_data_dir =
+
+nb_train_samples = np.len(x_train)
+nb_validation_samples = np.len(x_val)
 batch_size = 16
 epochs = 50
 
