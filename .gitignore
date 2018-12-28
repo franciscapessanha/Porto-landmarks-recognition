@@ -1,4 +1,5 @@
 images/
-dataset/images
+dataset/images/
 .python-version
 .vscode
+*.h5
