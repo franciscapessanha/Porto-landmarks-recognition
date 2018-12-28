@@ -108,28 +108,50 @@ def save_data(set_, y, folder_name):
     d2 = 0
     d3 = 0
     d4 = 0
+     
+    curr_path = os.getcwd()
+    path_arrabida = curr_path + "/dataset/divided_sets/" + folder_name + "/arrabida"
+    path_camara = curr_path + "/dataset/divided_sets/" + folder_name + "/camara"
+    path_clerigos = curr_path + "/dataset/divided_sets/" + folder_name + "/clerigos"
+    path_musica = curr_path + "/dataset/divided_sets/" + folder_name + "/musica"
+    path_serralves = curr_path + "/dataset/divided_sets/" + folder_name + "/serralves"
+    
+    if not os.path.exists(path_arrabida):
+        os.makedirs(path_arrabida)
+    
+    if not os.path.exists(path_camara):
+        os.makedirs(path_camara)
+    
+    if not os.path.exists(path_clerigos):
+        os.makedirs(path_clerigos)
+    
+    if not os.path.exists(path_musica):
+            os.makedirs(path_musica)
         
+    if not os.path.exists(path_serralves):
+            os.makedirs(path_serralves)
+                                
     for image, label in zip(set_,y):
         curr_path = os.getcwd()
-        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         if label == 0: #arrabida
-            filename = (curr_path + "/" + folder_name + "/arrabida/arrabida_%d.jpg") % d0
+            
+            filename = (path_arrabida + "/%d.jpg") % d0
             cv.imwrite(filename, image)
             d0 += 1
         elif label == 1: #camara
-            filename = (curr_path + "/" + folder_name + "/camara/camara_%d.jpg") % d1
+            filename = (path_camara + "/%d.jpg") % d1
             cv.imwrite(filename, image)
             d1 += 1
         elif label == 2: #clerigos
-            filename = (curr_path + "/" + folder_name + "/clerigos/clerigos_%d.jpg") % d2
+            filename = (path_clerigos + "/%d.jpg") % d2
             cv.imwrite(filename, image)
             d2 += 1
         elif label == 3: #musica
-            filename = (curr_path + "/" + folder_name + "/musica/musica_%d.jpg") % d3
+            filename = (path_musica + "/%d.jpg") % d3
             cv.imwrite(filename, image)
             d3 += 1
         elif label == 4: #serralves
-            filename = (curr_path + "/" + folder_name + "/serralves/serralves_%d.jpg") % d4
+            filename = (path_serralves + "/%d.jpg") % d4
             cv.imwrite(filename, image)
             d4 += 1
             
@@ -141,12 +163,13 @@ Saves datasets after resizing.
 """            
 def run():
     curr_path = os.getcwd()
-    
-    arrabida = find_images(os.path.join(curr_path, 'images/arrabida'))
-    camara = find_images(os.path.join(curr_path, 'images/camara'))
-    clerigos = find_images(os.path.join(curr_path, 'images/clerigos'))
-    musica = find_images(os.path.join(curr_path, 'images/musica'))
-    serralves = find_images(os.path.join(curr_path, 'images/serralves'))
+
+    print("1. Get images paths")
+    arrabida = find_images(os.path.join(curr_path, 'dataset/images/arrabida'))
+    camara = find_images(os.path.join(curr_path, 'dataset/images/camara'))
+    clerigos = find_images(os.path.join(curr_path, 'dataset/images/clerigos'))
+    musica = find_images(os.path.join(curr_path, 'dataset/images/musica'))
+    serralves = find_images(os.path.join(curr_path, 'dataset/images/serralves'))
     x = np.concatenate((arrabida, camara, clerigos, musica, serralves))
     
     y_arrabida = np.zeros(np.shape(arrabida),np.uint8)
@@ -155,22 +178,26 @@ def run():
     y_musica = np.ones(np.shape(musica),np.uint8)*3
     y_serralves = np.ones(np.shape(serralves),np.uint8)*4
     y = np.concatenate((y_arrabida, y_camara, y_clerigos, y_musica, y_serralves))
+    
+    print("2. Split into datasets (train, test, validation)")
     x_train, y_train, x_val, y_val, x_test, y_test = split_data(x,y)
     
     train = []
     val = []
     test = []
-    print("train")
+   
+    print("3. Save resized images")
+    print("  3.1 Train")
     for path in x_train:
         image = cv.imread(path[0])
         image = resize_images(image)
         train.append(image)
-    print("val")
+    print("  3.2 Validation")
     for path in x_val:
         image = cv.imread(path[0])
         image = resize_images(image)
         val.append(image)
-    print("test")
+    print("  3.3 Test")
     for path in x_test:
         image = cv.imread(path[0])
         image = resize_images(image)
