@@ -18,9 +18,12 @@ def find_images(directory):
     files = []
     full_path = []
     for file in os.listdir(directory):
-        if file.endswith('.jpg'):
+        if file.endswith('.jpg') or file.endswith('.png'):
             files += [file]
             full_path += [os.path.join(directory,file)]    
+        else:
+            print("Images format must be '.jpg' or '.png'")
+            
     files.sort()
     full_path.sort()
     return np.array(full_path).reshape(-1,1)
@@ -98,17 +101,13 @@ Save Data
 Saves the images in folders, organized by dataset and class
 
 Arguments:
-    * set_: image dataset
-    * y: image labels
+    * image: image
+    * label: image label
+    * i: image index
     * folder_name: name of the dataset
 """
-def save_data(set_, y, folder_name):
-    d0 = 0
-    d1 = 0
-    d2 = 0
-    d3 = 0
-    d4 = 0
-     
+def save_data(image, label, i, folder_name):
+
     curr_path = os.getcwd()
     path_arrabida = curr_path + "/dataset/divided_sets/" + folder_name + "/arrabida"
     path_camara = curr_path + "/dataset/divided_sets/" + folder_name + "/camara"
@@ -131,29 +130,21 @@ def save_data(set_, y, folder_name):
     if not os.path.exists(path_serralves):
             os.makedirs(path_serralves)
                                 
-    for image, label in zip(set_,y):
-        curr_path = os.getcwd()
-        if label == 0: #arrabida
-            
-            filename = (path_arrabida + "/%d.jpg") % d0
-            cv.imwrite(filename, image)
-            d0 += 1
-        elif label == 1: #camara
-            filename = (path_camara + "/%d.jpg") % d1
-            cv.imwrite(filename, image)
-            d1 += 1
-        elif label == 2: #clerigos
-            filename = (path_clerigos + "/%d.jpg") % d2
-            cv.imwrite(filename, image)
-            d2 += 1
-        elif label == 3: #musica
-            filename = (path_musica + "/%d.jpg") % d3
-            cv.imwrite(filename, image)
-            d3 += 1
-        elif label == 4: #serralves
-            filename = (path_serralves + "/%d.jpg") % d4
-            cv.imwrite(filename, image)
-            d4 += 1
+    if label == 0: #arrabida
+        filename = (path_arrabida + "/arrabida_%d.jpg") % i
+        cv.imwrite(filename, image)
+    elif label == 1: #camara
+        filename = (path_camara + "/camara_%d.jpg") % i
+        cv.imwrite(filename, image)
+    elif label == 2: #clerigos
+        filename = (path_clerigos + "/clerigos_%d.jpg") % i
+        cv.imwrite(filename, image)
+    elif label == 3: #musica
+        filename = (path_musica + "/musica_%d.jpg") % i
+        cv.imwrite(filename, image)
+    elif label == 4: #serralves
+        filename = (path_serralves + "/serralves_%d.jpg") % i
+        cv.imwrite(filename, image)
             
 """
 Get Data
@@ -182,31 +173,41 @@ def run():
     print("2. Split into datasets (train, test, validation)")
     x_train, y_train, x_val, y_val, x_test, y_test = split_data(x,y)
     
-    train = []
-    val = []
-    test = []
-   
-    print("3. Save resized images")
+    print("3. Save resized images by dataset")
     print("  3.1 Train")
-    for path in x_train:
+    for path,i in zip(x_train, range(len(x_train))):
         image = cv.imread(path[0])
         image = resize_images(image)
-        train.append(image)
+        save_data(image, y_train[i],i, "resized_train")
+   
     print("  3.2 Validation")
-    for path in x_val:
+    for path,i in zip(x_val, range(len(x_val))):
         image = cv.imread(path[0])
         image = resize_images(image)
-        val.append(image)
+        save_data(image, y_val[i],i, "resize_val")
+   
     print("  3.3 Test")
-    for path in x_test:
+    for path,i in zip(x_test, range(len(x_test))):
         image = cv.imread(path[0])
         image = resize_images(image)
-        test.append(image)
-            
-    save_data(train, y_train, "train")
-    save_data(val,y_val,"val")
-    save_data(test,y_test,"test")
+        save_data(image, y_test[i],i, "resize_test")
+    
+    print("4. Save original images by dataset")
 
+    print("  4.1 Train")
+    for path,i in zip(x_train, range(len(x_train))):
+        image = cv.imread(path[0])
+        save_data(image, y_train[i],i, "original_train")
+   
+    print("  4.2 Validation")
+    for path,i in zip(x_val, range(len(x_val))):
+        image = cv.imread(path[0])
+        save_data(image, y_val[i],i, "original_val")
+
+    print("  4.3 Test")
+    for path,i in zip(x_test, range(len(x_test))):
+        image = cv.imread(path[0])
+        save_data(image, y_test[i],i, "original_test")
 run()
 
 
