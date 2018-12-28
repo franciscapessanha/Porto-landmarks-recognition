@@ -224,7 +224,7 @@ def run():
     print("2. Split into datasets (train, test, validation)")
     x_train, y_train, x_val, y_val, x_test, y_test = split_data(x,y)
     
-    """
+
     print("3. Save resized images by dataset")
     print("  3.1 Train")
     for path,i in zip(x_train, range(len(x_train))):
@@ -243,7 +243,7 @@ def run():
         image = cv.imread(path[0])
         image = resize_images(image)
         save_image(image, y_test[i],i, "resize_test")
-        """
+    
         
     #ACRESCENTAR ANOTAÇÕES QUE FALTAM
     print("4. Save original images by dataset")
