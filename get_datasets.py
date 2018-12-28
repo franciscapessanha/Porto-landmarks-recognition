@@ -2,6 +2,7 @@ import os
 import numpy as np
 import cv2 as cv
 from sklearn.model_selection import train_test_split
+import shutil
 
 """
 Find Images
@@ -96,7 +97,7 @@ def resize_images(image, h_size = 224, w_size = 224): #shape images ImageNet
     return resized_image
 
 """
-Save Data
+Save Image
 ==============================================================================
 Saves the images in folders, organized by dataset and class
 
@@ -106,7 +107,7 @@ Arguments:
     * i: image index
     * folder_name: name of the dataset
 """
-def save_data(image, label, i, folder_name):
+def save_image(image, label, i, folder_name):
 
     curr_path = os.getcwd()
     path_arrabida = curr_path + "/dataset/divided_sets/" + folder_name + "/arrabida"
@@ -147,6 +148,56 @@ def save_data(image, label, i, folder_name):
         cv.imwrite(filename, image)
             
 """
+Save Annotations
+==============================================================================
+Saves the annotation in folders, organized by dataset and class
+
+Arguments:
+    * annotation: image
+    * label: image label
+    * i: image index
+    * folder_name: name of the dataset
+"""
+def save_copy(path, label, i, folder_name, extension):
+
+    curr_path = os.getcwd()
+    path_arrabida = curr_path + "/dataset/divided_sets/" + folder_name + "/arrabida"
+    path_camara = curr_path + "/dataset/divided_sets/" + folder_name + "/camara"
+    path_clerigos = curr_path + "/dataset/divided_sets/" + folder_name + "/clerigos"
+    path_musica = curr_path + "/dataset/divided_sets/" + folder_name + "/musica"
+    path_serralves = curr_path + "/dataset/divided_sets/" + folder_name + "/serralves"
+    
+    if not os.path.exists(path_arrabida):
+        os.makedirs(path_arrabida)
+    
+    if not os.path.exists(path_camara):
+        os.makedirs(path_camara)
+    
+    if not os.path.exists(path_clerigos):
+        os.makedirs(path_clerigos)
+    
+    if not os.path.exists(path_musica):
+            os.makedirs(path_musica)
+        
+    if not os.path.exists(path_serralves):
+            os.makedirs(path_serralves)
+                                    
+    if label == 0: #arrabida
+        filename = (path_arrabida + "/arrabida_%d" + extension) % i
+        shutil.copy2(path,filename)
+    elif label == 1: #camara
+        filename = (path_camara + "/camara_%d" + extension) % i
+        shutil.copy2(path,filename)
+    elif label == 2: #clerigos
+        filename = (path_clerigos + "/clerigos_%d" + extension) % i
+        shutil.copy2(path,filename)
+    elif label == 3: #musica
+        filename = (path_musica + "/musica_%d" + extension) % i
+        shutil.copy2(path,filename)
+    elif label == 4: #serralves
+        filename = (path_serralves + "/serralves_%d" + extension) % i
+        shutil.copy2(path,filename)
+"""
 Get Data
 ==============================================================================
 Saves datasets after resizing.
@@ -173,41 +224,52 @@ def run():
     print("2. Split into datasets (train, test, validation)")
     x_train, y_train, x_val, y_val, x_test, y_test = split_data(x,y)
     
+    """
     print("3. Save resized images by dataset")
     print("  3.1 Train")
     for path,i in zip(x_train, range(len(x_train))):
         image = cv.imread(path[0])
         image = resize_images(image)
-        save_data(image, y_train[i],i, "resized_train")
+        save_image(image, y_train[i],i, "resized_train")
    
     print("  3.2 Validation")
     for path,i in zip(x_val, range(len(x_val))):
         image = cv.imread(path[0])
         image = resize_images(image)
-        save_data(image, y_val[i],i, "resize_val")
+        save_image(image, y_val[i],i, "resize_val")
    
     print("  3.3 Test")
     for path,i in zip(x_test, range(len(x_test))):
         image = cv.imread(path[0])
         image = resize_images(image)
-        save_data(image, y_test[i],i, "resize_test")
-    
+        save_image(image, y_test[i],i, "resize_test")
+        """
+        
+    #ACRESCENTAR ANOTAÇÕES QUE FALTAM
     print("4. Save original images by dataset")
-
     print("  4.1 Train")
     for path,i in zip(x_train, range(len(x_train))):
-        image = cv.imread(path[0])
-        save_data(image, y_train[i],i, "original_train")
+        ann_path = path[0].replace("images", "annotations")
+        ann_path = ann_path.replace("jpg", "xml")
+        if os.path.exists(ann_path):
+            save_copy(ann_path, y_train[i], i, "annotations_train", ".xml")
+            save_copy(path[0], y_train[i], i, "original_train", ".jpg")
    
     print("  4.2 Validation")
     for path,i in zip(x_val, range(len(x_val))):
-        image = cv.imread(path[0])
-        save_data(image, y_val[i],i, "original_val")
+        ann_path = path[0].replace("images", "annotations")
+        ann_path = ann_path.replace("jpg", "xml")
+        if os.path.exists(ann_path):
+            save_copy(ann_path, y_val[i], i, "annotations_val", ".xml")
+            save_copy(path[0], y_val[i], i, "original_val", ".jpg")
 
     print("  4.3 Test")
     for path,i in zip(x_test, range(len(x_test))):
-        image = cv.imread(path[0])
-        save_data(image, y_test[i],i, "original_test")
+        ann_path = path[0].replace("images", "annotations")
+        ann_path = ann_path.replace("jpg", "xml")
+        if os.path.exists(ann_path):
+            save_copy(ann_path, y_test[i], i, "annotations_test", ".xml")
+            save_copy(path[0], y_test[i], i, "original_test", ".jpg")
 run()
 
 
