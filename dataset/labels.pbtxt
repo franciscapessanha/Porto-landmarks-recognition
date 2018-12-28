@@ -1,0 +1,24 @@
+item {
+  id: 1
+  name: 'serralves'
+}
+
+item {
+  id: 2
+  name: 'musica'
+}
+
+item {
+  id: 3
+  name: 'arrabida'
+}
+
+item {
+  id: 4
+  name: 'clerigos'
+}
+
+item {
+  id: 5
+  name: 'camara'
+}
