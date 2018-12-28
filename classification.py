@@ -1,3 +1,5 @@
+
+#https://medium.com/@14prakash/transfer-learning-using-keras-d804b2e04ef8
 from keras import applications
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
@@ -6,17 +8,13 @@ from keras.layers import Dropout, Flatten, Dense, GlobalAveragePooling2D
 from keras import backend as k 
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 
-
-
-x_train, y_train, x_val, y_val, x_test, y_test = get_data()
 img_width, img_height = 224, 224
-train_data_dir = 
-validation_data_dir =
-
-nb_train_samples = np.len(x_train)
-nb_validation_samples = np.len(x_val)
-batch_size = 16
-epochs = 50
+train_data_dir = "./train"
+validation_data_dir = "./val"
+nb_train_samples = 1456
+nb_validation_samples = 331
+batch_size = 16 #16
+epochs = 3 #50
 
 model = applications.VGG19(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3))
 
@@ -24,21 +22,21 @@ model = applications.VGG19(weights = "imagenet", include_top=False, input_shape 
 for layer in model.layers[:5]:
     layer.trainable = False
 
-#Adding custom Layers 
+print("Adding custom Layers ")
 x = model.output
 x = Flatten()(x)
 x = Dense(1024, activation="relu")(x)
 x = Dropout(0.5)(x)
 x = Dense(1024, activation="relu")(x)
-predictions = Dense(16, activation="softmax")(x)
+predictions = Dense(5, activation="softmax")(x)
 
-# creating the final model 
+print("Creating the final model")
 model_final = Model(input = model.input, output = predictions)
 
-# compile the model 
+print("compile the model") 
 model_final.compile(loss = "categorical_crossentropy", optimizer = optimizers.SGD(lr=0.0001, momentum=0.9), metrics=["accuracy"])
 
-# Initiate the train and test generators with data Augumentation 
+print("Initiate the train and test generators with data Augumentation ")
 train_datagen = ImageDataGenerator(
 rescale = 1./255,
 horizontal_flip = True,
@@ -68,16 +66,16 @@ validation_data_dir,
 target_size = (img_height, img_width),
 class_mode = "categorical")
 
-# Save the model according to the conditions  
+print("Save the model according to the conditions")
 checkpoint = ModelCheckpoint("vgg16_1.h5", monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 early = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, verbose=1, mode='auto')
 
 
-# Train the model 
+print("Train the model")
 model_final.fit_generator(
 train_generator,
-samples_per_epoch = nb_train_samples,
+steps_per_epoch = (nb_train_samples/batch_size),
 epochs = epochs,
 validation_data = validation_generator,
-nb_val_samples = nb_validation_samples,
+validation_steps = (nb_validation_samples/batch_size),
 callbacks = [checkpoint, early])
