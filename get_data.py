@@ -2,7 +2,6 @@ import os
 import numpy as np
 import cv2 as cv
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import StratifiedKFold
 
 """
 Find Images
@@ -37,115 +36,62 @@ Split the data in:
 Arguments:
     * x: images paths
     * y: images labels
-    * mode: default or cross_val (cross validation with 5 folds)
 
 Returns:
-    if mode = "default":
-        * x_train: list with the images of the train set
-        * y_train: list with the labels of the train set
-        * x_val: list with the images of the validation set
-        * y_val: list with the labels of the validation set
-        * x_test: list with the images of the test set
-        * y_test: list with the labels of the test set
+    * x_train: list with the images of the train set
+    * y_train: list with the labels of the train set
+    * x_val: list with the images of the validation set
+    * y_val: list with the labels of the validation set
+    * x_test: list with the images of the test set
+    * y_test: list with the labels of the test set
 
-    if mode = "cross_val":
-        * cv_x_train: list with 5 different set of images of the train set
-        * cv_y_train: list with 5 different set of labels of the train set
-        * cv_x_val: list with 5 different set of images for the validation set
-        * cv_y_val: list with 5 different set of labels of the validation set
-        * x_test: list with the images of the test set
-        * y_test: list with the labels of the test set
 """
-def split_data(x, y, mode = "default"):
+def split_data(x, y):
     x_train, xi_test, y_train, yi_test = train_test_split(x, y, stratify=y, test_size=0.3)
     x_test, x_val, y_test, y_val = train_test_split(xi_test, yi_test, stratify=yi_test, test_size=0.5)
-
-    if mode == "default":
-        return x_train, y_train, x_val, y_val, x_test, y_test
     
-    elif mode == "cross_val": 
-        x_cv = np.concatenate((x_train, x_val))
-        y_cv = np.concatenate((y_train, y_val))
-        
-        skf = StratifiedKFold(n_splits = 5)
-        
-        cv_x_train = []
-        cv_y_train = []
-        cv_x_val = []
-        cv_y_val = []
-        
-        for train_index, val_index in skf.split(x_cv, y_cv):
-             x_train, x_val = x[train_index], x[val_index]
-             y_train, y_val = y[train_index], y[val_index]
-             
-             cv_x_train.append(x_train)
-             cv_y_train.append(y_train)
-             cv_x_val.append(x_val)
-             cv_y_val.append(y_val)
+    return x_train, y_train, x_val, y_val, x_test, y_test
     
-        return cv_x_train, cv_y_train,cv_x_val, cv_y_val, x_test, y_test
 
 """
-Load Data
+Resize Image
 ==============================================================================
-Loads the images on the paths given
+Resizes an image to a defined size (h_size x w_size)
 
 Arguments:
-    * x: list of all the image paths
-Returns:
-    * loaded_x: list with all the images
-"""
-
-def load_data(x):
-    loaded_x = []
-    for i in range(len(x)):
-        print(x[i])
-        loaded_x.append(cv.imread(x[i][0]))   
-    return loaded_x
-
-"""
-Resize Images
-==============================================================================
-Resizes all images to a defined size (h_size x w_size)
-
-Arguments:
-    * set_: image dataset
+    * image: image
     * h_size: desired height
     * w_size: desired width
 Returns:
     * resized_set : resized dataset
 """  
-def resize_images(set_, h_size = 224, w_size = 224): #shape images ImageNet
-    resized_set = []
-    
-    
+def resize_images(image, h_size = 224, w_size = 224): #shape images ImageNet    
     #INSERIR MENSAGEM DE ERRO CASO NAO SEJA ENCONTRADA UMA ESCALA ADEQUADA
-    
-    for image in set_:
-        h, w, _ = image.shape
-        for scale in np.arange(2.0, 0.0, -0.005):
-            if w * scale <= w_size and h * scale <= h_size:
-                break
-        image = cv.resize(image, (0,0), fx=scale, fy=scale) 
-        new_h, new_w, h = image.shape
-                
-        if (h_size - new_h) % 2 == 0: # height is even
-            b_top = int((h_size - new_h) /2)
-            b_bot = b_top
+
+    h, w, _ = image.shape
+    for scale in np.arange(2.0, 0.0, -0.005):
+        if w * scale <= w_size and h * scale <= h_size:
+            break
+    image = cv.resize(image, (0,0), fx=scale, fy=scale) 
+    new_h, new_w, h = image.shape
             
-        else:
-            b_top = int((h_size - new_h) / 2)
-            b_bot = int(h_size - new_h - b_top)
+    if (h_size - new_h) % 2 == 0: # height is even
+        b_top = int((h_size - new_h) /2)
+        b_bot = b_top
         
-        if (w_size - new_w % 2) == 0: # width is even
-            b_left = int((w_size - new_w) / 2)
-            b_right = b_left
-        else:
-            b_left= int((w_size - new_w)/2)
-            b_right = int((w_size - new_w) - b_left)
-            
-        resized_set.append(cv.copyMakeBorder(image, top = b_top,bottom = b_bot, left = b_left, right = b_right, borderType = cv.BORDER_CONSTANT, value = [0,0,0]))   
-    return resized_set
+    else:
+        b_top = int((h_size - new_h) / 2)
+        b_bot = int(h_size - new_h - b_top)
+    
+    if (w_size - new_w % 2) == 0: # width is even
+        b_left = int((w_size - new_w) / 2)
+        b_right = b_left
+    else:
+        b_left= int((w_size - new_w)/2)
+        b_right = int((w_size - new_w) - b_left)
+        
+    resized_image = cv.copyMakeBorder(image, top = b_top,bottom = b_bot, left = b_left, right = b_right, borderType = cv.BORDER_CONSTANT, value = [0,0,0])   
+    return resized_image
 
 """
 Get Normalization Parameters (mean and std)
@@ -164,7 +110,6 @@ def get_norm_parameters(train):
     blue_train = []
     green_train = []
     red_train = []
-        
     for i in range(len(train)):
         b,g,r = cv.split(train[i])
         blue_train.append(b)
@@ -224,31 +169,33 @@ Arguments:
     * folder_name: name of the dataset
 """
 def save_data(set_, y, folder_name):
-    for image, label in zip(set_,y):
-        d0 = 0
-        d1 = 0
-        d2 = 0
-        d3 = 0
-        d4 = 0
+    d0 = 0
+    d1 = 0
+    d2 = 0
+    d3 = 0
+    d4 = 0
         
+    for image, label in zip(set_,y):
+        curr_path = os.getcwd()
+        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         if label == 0: #arrabida
-            filename = (folder_name + "/arrabida/arrabida_%d.jpg") % d0
+            filename = (curr_path + "/" + folder_name + "/arrabida/arrabida_%d.jpg") % d0
             cv.imwrite(filename, image)
             d0 += 1
         elif label == 1: #camara
-            filename = (folder_name + "/camara/camara_%d.jpg") % d1
+            filename = (curr_path + "/" + folder_name + "/camara/camara_%d.jpg") % d1
             cv.imwrite(filename, image)
             d1 += 1
         elif label == 2: #clerigos
-            filename = (folder_name + "/clerigos/clerigos_%d.jpg") % d2
+            filename = (curr_path + "/" + folder_name + "/clerigos/clerigos_%d.jpg") % d2
             cv.imwrite(filename, image)
             d2 += 1
         elif label == 3: #musica
-            filename = (folder_name + "/musica/musica_%d.jpg") % d3
+            filename = (curr_path + "/" + folder_name + "/musica/musica_%d.jpg") % d3
             cv.imwrite(filename, image)
             d3 += 1
         elif label == 4: #serralves
-            filename = (folder_name + "/serralves/serralves_%d.jpg") % d4
+            filename = (curr_path + "/" + folder_name + "/serralves/serralves_%d.jpg") % d4
             cv.imwrite(filename, image)
             d4 += 1
             
@@ -257,26 +204,16 @@ Get Data
 ==============================================================================
 Returns datasets after resizing and data normalization.
 
-Arguments:
-    * mode: "default" or "cross-val"
 Returns:
-    if mode = "default":
-        * x_train: list with the images of the train set
-        * y_train: list with the labels of the train set
-        * x_val: list with the images of the validation set
-        * y_val: list with the labels of the validation set
-        * x_test: list with the images of the test set
-        * y_test: list with the labels of the test set
+    * x_train: list with the images of the train set
+    * y_train: list with the labels of the train set
+    * x_val: list with the images of the validation set
+    * y_val: list with the labels of the validation set
+    * x_test: list with the images of the test set
+    * y_test: list with the labels of the test set
 
-    if mode = "cross_val":
-        * x_train: list with 5 different set of images of the train set
-        * y_train: list with 5 different set of labels of the train set
-        * x_val: list with 5 different set of images for the validation set
-        * y_val: list with 5 different set of labels of the validation set
-        * x_test: list with the images of the test set
-        * y_test: list with the labels of the test set
 """            
-def get_data(mode = "default"):
+def get_data():
     curr_path = os.getcwd()
     
     arrabida = find_images(os.path.join(curr_path, 'images/arrabida'))
@@ -286,60 +223,45 @@ def get_data(mode = "default"):
     serralves = find_images(os.path.join(curr_path, 'images/serralves'))
     x = np.concatenate((arrabida, camara, clerigos, musica, serralves))
     
-    y_arrabida = np.zeros(np.shape(arrabida))
-    y_camara = np.ones(np.shape(camara))
-    y_clerigos = np.ones(np.shape(clerigos))*2
-    y_musica = np.ones(np.shape(musica))*3
-    y_serralves = np.ones(np.shape(serralves))*4
+    y_arrabida = np.zeros(np.shape(arrabida),np.uint8)
+    y_camara = np.ones(np.shape(camara),np.uint8)
+    y_clerigos = np.ones(np.shape(clerigos),np.uint8)*2
+    y_musica = np.ones(np.shape(musica),np.uint8)*3
+    y_serralves = np.ones(np.shape(serralves),np.uint8)*4
     y = np.concatenate((y_arrabida, y_camara, y_clerigos, y_musica, y_serralves))
    
-    if mode == "default":
-        x_train, y_train, x_val, y_val, x_test, y_test = split_data(x,y)
-        
-        x_train = load_data(x_train)
-        x_val = load_data(x_val)
-        x_test = load_data(x_test)
-        
-        x_train = resize_images(x_train)
-        x_val = resize_images(x_val)
-        x_test = resize_images(x_test)
-        
-        mean, std = get_norm_parameters(x_train)
-        x_train = normalize_data(x_train, mean, std)
-        x_val = normalize_data(x_val, mean, std) 
-        x_test = normalize_data(x_test, mean, std)
-        
-        
-    elif mode == "cross_val":
-        cv_x_train, cv_y_train,cv_x_val, cv_y_val, x_test, y_test =split_data(x,y, "cross_val")
-        x_train = []
-        x_val = []
-        x_test = []
-        
-        x0_test = load_data(x_test)
-        x0_test = resize_images(x_test)
-        
-        for x_train, x_val in zip(cv_x_train, cv_x_val):
+    x_train, y_train, x_val, y_val, x_test, y_test = split_data(x,y)
+    
+    train = []
+    val = []
+    test = []
+    print("train")
+    for path in x_train:
+        image = cv.imread(path[0])
+        image = resize_images(image)
+        train.append(image)
+    print("val")
+    for path in x_val:
+        image = cv.imread(path[0])
+        image = resize_images(image)
+        val.append(image)
+    print("test")
+    for path in x_test:
+        image = cv.imread(path[0])
+        image = resize_images(image)
+        test.append(image)
             
-            xi_train = load_data(x_train)
-            xi_val = load_data(x_val)
-            
-            xi_train = resize_images(xi_train)
-            xi_val = resize_images(xi_val)
-            
-            mean, std = get_norm_parameters(xi_train)
-            xi_train = normalize_data(xi_train, mean, std)
-            xi_val = normalize_data(xi_val, mean, std) 
-            xi_test = normalize_data(x0_test, mean, std)
-            
-            x_train.append(xi_train)
-            x_val.append(xi_val)
-            x_test.append(xi_test)
-            
-            save_data(x_train, y_train, "train")
-            save_data(x_val, y_val, "val")
-            save_data(x_test, y_test, "test")
-
+    """
+    mean, std = get_norm_parameters(train)
+    x_train = normalize_data(train, mean, std)
+    x_val = normalize_data(val, mean, std) 
+    x_test = normalize_data(test, mean, std)
+    """
+    
+    save_data(x_train, y_train, "train")
+    save_data(x_val,y_val,"val")
+    save_data(x_test,y_test,"test")
+    
     return x_train, y_train, x_val, y_val, x_test, y_test
 
 x_train, y_train, x_val, y_val, x_test, y_test = get_data()
