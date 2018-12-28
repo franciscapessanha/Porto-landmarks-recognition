@@ -7,10 +7,8 @@ Created on Fri Dec 28 19:20:11 2018
 """
 
 import xml.etree.ElementTree as ET
-import pickle
+import numpy as np
 import os
-from os import listdir, getcwd
-from os.path import join
 
 sets=['train', 'val', 'test']
 classes = ['serralves', 'musica', 'clerigos', 'camara', 'arrabida']
@@ -30,7 +28,7 @@ def convert(size, box):
 
 def convert_annotation(image_set,label, image_id):
     in_file = open('../dataset/divided_sets/annotations_%s/%s/%s.xml'%(image_set,label, image_id))
-    out_file = open('../dataset/divided_sets/yolo_ann_%s/%s/%s.txt'%(image_set, label,image_id), 'w')
+    out_file = open('../dataset/divided_sets/yolo_ann_%s//%s.txt'%(image_set, image_id), 'w')
     
     tree=ET.parse(in_file)
     root = tree.getroot()
@@ -49,16 +47,22 @@ def convert_annotation(image_set,label, image_id):
         bb = convert((w,h), b)
         out_file.write(str(cls_id) + " " + " ".join([str(a) for a in bb]) + '\n')
 
-curr_path = getcwd()
-
 for image_set in sets:
+    image_list = []
     for label in classes:
-        if not os.path.exists('../dataset/divided_sets/yolo_ann_%s/%s' %(image_set,label)):
-            os.makedirs('../dataset/divided_sets/yolo_ann_%s/%s' %(image_set,label))
+        if not os.path.exists('../dataset/divided_sets/yolo_ann_%s' %image_set):
+            os.makedirs('../dataset/divided_sets/yolo_ann_%s' %(image_set))
             
             import glob
     
         image_ids = [f.split("/")[-1].replace('.xml','') for f in glob.glob('../dataset/divided_sets/annotations_%s/%s/*.xml' %(image_set,label))]
+        image_list.append([f for f in glob.glob('../dataset/divided_sets/original_%s/%s/*.jpg' %(image_set,label))])
         
         for image_id in image_ids:
             convert_annotation(image_set, label, image_id)
+    
+    with open('../dataset/divided_sets/yolo_ann_%s/%s.txt' % (image_set,image_set), 'w') as f:
+        for item in np.hstack(image_list):
+            f.write("%s\n" % item)
+    
+    
