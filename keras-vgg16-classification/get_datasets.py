@@ -21,7 +21,7 @@ def find_images(directory):
     for file in os.listdir(directory):
         if file.endswith('.jpg') or file.endswith('.png'):
             files += [file]
-            full_path += [os.path.join(directory,file)]    
+            full_path += [os.path.join(directory, file)]
         else:
             print("Images format must be '.jpg' or '.png'")
             
@@ -110,27 +110,27 @@ Arguments:
 def save_image(image, label, i, folder_name):
 
     curr_path = os.getcwd()
-    path_arrabida = curr_path + "/dataset/divided_sets/" + folder_name + "/arrabida"
-    path_camara = curr_path + "/dataset/divided_sets/" + folder_name + "/camara"
-    path_clerigos = curr_path + "/dataset/divided_sets/" + folder_name + "/clerigos"
-    path_musica = curr_path + "/dataset/divided_sets/" + folder_name + "/musica"
-    path_serralves = curr_path + "/dataset/divided_sets/" + folder_name + "/serralves"
-    
+    path_arrabida = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "arrabida"))
+    path_camara = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "camara"))
+    path_clerigos = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "clerigos"))
+    path_musica = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "musica"))
+    path_serralves = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "serralves"))
+
     if not os.path.exists(path_arrabida):
         os.makedirs(path_arrabida)
-    
+
     if not os.path.exists(path_camara):
         os.makedirs(path_camara)
-    
+
     if not os.path.exists(path_clerigos):
         os.makedirs(path_clerigos)
-    
+
     if not os.path.exists(path_musica):
             os.makedirs(path_musica)
-        
+
     if not os.path.exists(path_serralves):
             os.makedirs(path_serralves)
-                                
+
     if label == 0: #arrabida
         filename = (path_arrabida + "/arrabida_%d.jpg") % i
         cv.imwrite(filename, image)
@@ -146,7 +146,7 @@ def save_image(image, label, i, folder_name):
     elif label == 4: #serralves
         filename = (path_serralves + "/serralves_%d.jpg") % i
         cv.imwrite(filename, image)
-            
+
 """
 Save Annotations
 ==============================================================================
@@ -161,27 +161,27 @@ Arguments:
 def save_copy(path, label, i, folder_name, extension):
 
     curr_path = os.getcwd()
-    path_arrabida = curr_path + "/dataset/divided_sets/" + folder_name + "/arrabida"
-    path_camara = curr_path + "/dataset/divided_sets/" + folder_name + "/camara"
-    path_clerigos = curr_path + "/dataset/divided_sets/" + folder_name + "/clerigos"
-    path_musica = curr_path + "/dataset/divided_sets/" + folder_name + "/musica"
-    path_serralves = curr_path + "/dataset/divided_sets/" + folder_name + "/serralves"
+    path_arrabida = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "arrabida"))
+    path_camara = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "camara"))
+    path_clerigos = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "clerigos"))
+    path_musica = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "musica"))
+    path_serralves = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "serralves"))
     
     if not os.path.exists(path_arrabida):
         os.makedirs(path_arrabida)
-    
+
     if not os.path.exists(path_camara):
         os.makedirs(path_camara)
-    
+
     if not os.path.exists(path_clerigos):
         os.makedirs(path_clerigos)
-    
+
     if not os.path.exists(path_musica):
-            os.makedirs(path_musica)
-        
+        os.makedirs(path_musica)
+
     if not os.path.exists(path_serralves):
-            os.makedirs(path_serralves)
-                                    
+        os.makedirs(path_serralves)
+
     if label == 0: #arrabida
         filename = (path_arrabida + "/arrabida_%d" + extension) % i
         shutil.copy2(path,filename)
@@ -207,11 +207,11 @@ def run():
     curr_path = os.getcwd()
 
     print("1. Get images paths")
-    arrabida = find_images(os.path.join(curr_path, 'dataset/images/arrabida'))
-    camara = find_images(os.path.join(curr_path, 'dataset/images/camara'))
-    clerigos = find_images(os.path.join(curr_path, 'dataset/images/clerigos'))
-    musica = find_images(os.path.join(curr_path, 'dataset/images/musica'))
-    serralves = find_images(os.path.join(curr_path, 'dataset/images/serralves'))
+    arrabida = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/arrabida')))
+    camara = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/camara')))
+    clerigos = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/clerigos')))
+    musica = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/musica')))
+    serralves = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/serralves')))
     x = np.concatenate((arrabida, camara, clerigos, musica, serralves))
     
     y_arrabida = np.zeros(np.shape(arrabida),np.uint8)

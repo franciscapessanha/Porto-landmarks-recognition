@@ -3,4 +3,5 @@ dataset/images/
 dataset/divided_sets
 .python-version
 .vscode
+.pylintrc
 *.h5
