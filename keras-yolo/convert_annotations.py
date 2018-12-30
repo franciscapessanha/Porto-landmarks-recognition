@@ -40,7 +40,7 @@ def convert_annotation(image_set,label, image_id):
             continue
         cls_id = classes.index(cls)
         xmlbox = obj.find('bndbox')
-        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymin').text)), int(float(xmlbox.find('ymax').text)))        
+        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('ymin').text)), int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymax').text)))        
         annotation = annotation + ",".join([str(a) for a in b]) + ',' + str(cls_id) 
     
     return annotation
