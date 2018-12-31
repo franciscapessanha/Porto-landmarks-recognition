@@ -40,7 +40,7 @@ def convert_annotation(image_set,label, image_id):
             continue
         cls_id = classes.index(cls)
         xmlbox = obj.find('bndbox')
-        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymin').text)), int(float(xmlbox.find('ymax').text)))        
+        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('ymin').text)), int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymax').text)))        
         annotation = annotation + ",".join([str(a) for a in b]) + ',' + str(cls_id) 
     
     return annotation
@@ -61,7 +61,7 @@ for image_set in sets:
     
     with open('porto_dataset/annotations_%s.txt' % (image_set), 'w') as f:
         for item in np.hstack(annotations):
-            f.write("%s\n" % item)float
+            f.write("%s\n" % item)
 
 filenames = ['porto_dataset/annotations_train.txt', 'porto_dataset/annotations_val.txt']
 with open('porto_dataset/annotations_trainval.txt','w') as outfile:
