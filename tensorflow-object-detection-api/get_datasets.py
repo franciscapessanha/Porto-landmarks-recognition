@@ -63,7 +63,7 @@ Arguments:
 """
 def save_copy(path, folder_name):
 
-    new_path = os.path.normpath(os.path.join(os.getcwd(), "../dataset/divided_sets/", folder_name))
+    new_path = os.path.normpath(os.path.join(os.getcwd(), "../resized_dataset/divided_sets/", folder_name))
 
     if not os.path.exists(new_path):
         os.makedirs(new_path)
@@ -81,11 +81,11 @@ def run():
     curr_path = os.getcwd()
 
     print("1. Get images paths")
-    arrabida = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/arrabida')))
-    camara = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/camara')))
-    clerigos = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/clerigos')))
-    musica = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/musica')))
-    serralves = find_images(os.path.normpath(os.path.join(curr_path, '../dataset/images/serralves')))
+    arrabida = find_images(os.path.normpath(os.path.join(curr_path, '../resized_dataset/images/arrabida')))
+    camara = find_images(os.path.normpath(os.path.join(curr_path, '../resized_dataset/images/camara')))
+    clerigos = find_images(os.path.normpath(os.path.join(curr_path, '../resized_dataset/images/clerigos')))
+    musica = find_images(os.path.normpath(os.path.join(curr_path, '../resized_dataset/images/musica')))
+    serralves = find_images(os.path.normpath(os.path.join(curr_path, '../resized_dataset/images/serralves')))
     x = np.concatenate((arrabida, camara, clerigos, musica, serralves))
     
     y_arrabida = np.zeros(np.shape(arrabida),np.uint8)

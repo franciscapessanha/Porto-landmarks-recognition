@@ -1,7 +1,8 @@
 images/
 dataset/images/
 dataset/divided_sets
-resized_dataset/
+resized_dataset/images
+resized_dataset/divided_sets
 .python-version
 .vscode
 .pylintrc

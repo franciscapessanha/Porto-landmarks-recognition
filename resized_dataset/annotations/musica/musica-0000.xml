@@ -1,0 +1,26 @@
+<annotation>
+    <folder>images</folder>
+    <filename>musica-0000.jpg</filename>
+    <path>images/musica-0000.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>600</width>
+        <height>450</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>musica</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>11</xmin>
+            <ymin>6</ymin>
+            <xmax>514</xmax>
+            <ymax>384</ymax>
+        </bndbox>
+    </object>
+</annotation>

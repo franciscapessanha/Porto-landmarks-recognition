@@ -40,7 +40,6 @@ def save_image(image, label, image_id):
     cv.imwrite(filename, image)
 
 def validate_and_recize_bounding_box(h, w, xmin, ymin, xmax, ymax, max_side = 600):
-    print(w, h)
     if h > w:
         new_height = max_side
         new_width = int(w * (new_height/h))
