@@ -61,7 +61,7 @@ for image_set in sets:
     
     with open('porto_dataset/annotations_%s.txt' % (image_set), 'w') as f:
         for item in np.hstack(annotations):
-            f.write("%s\n" % item)float
+            f.write("%s\n" % item)
 
 filenames = ['porto_dataset/annotations_train.txt', 'porto_dataset/annotations_val.txt']
 with open('porto_dataset/annotations_trainval.txt','w') as outfile:
