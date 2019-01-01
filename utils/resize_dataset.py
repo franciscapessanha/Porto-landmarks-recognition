@@ -56,8 +56,7 @@ def validate_and_recize_bounding_box(h, w, xmin, ymin, xmax, ymax, max_side = 60
 
     return new_height, new_width, xmin, ymin, xmax, ymax
 
-# classes = ['serralves', 'musica', 'clerigos', 'camara', 'arrabida']
-classes = ['musica']
+classes = ['serralves', 'musica', 'clerigos', 'camara', 'arrabida']
 
 for label in classes:
     create_directories('images', label)
@@ -71,8 +70,6 @@ for label in classes:
         xml_annotation = open('../dataset/annotations/%s/%s.xml'%(label, image_id))
         tree = ET.parse(xml_annotation)
         root = tree.getroot()
-
-        print(h, w)
 
         try:
             for obj in root.iter('object'):
@@ -103,9 +100,9 @@ for label in classes:
 
         tree.write(open('../resized_dataset/annotations/%s/%s.xml'%(label, image_id), 'w'), encoding='unicode')
 
-        cv.rectangle(resized_image,(new_xmin, new_ymin), (new_xmax, new_ymax), (0, 255, 0), 2)
-        cv.imshow(image_id, resized_image)
-        cv.waitKey(0)
-        cv.destroyWindow(image_id)
+        # cv.rectangle(resized_image,(new_xmin, new_ymin), (new_xmax, new_ymax), (0, 255, 0), 2)
+        # cv.imshow(image_id, resized_image)
+        # cv.waitKey(0)
+        # cv.destroyWindow(image_id)
 
         save_image(resize_image(image, h, w), label, image_id)

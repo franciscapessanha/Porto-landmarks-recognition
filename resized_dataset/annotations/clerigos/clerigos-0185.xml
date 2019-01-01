@@ -1,0 +1,26 @@
+<annotation>
+    <folder>images</folder>
+    <filename>clerigos-0185.jpg</filename>
+    <path>images/clerigos-0185.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>384</width>
+        <height>600</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>clerigos</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>120</xmin>
+            <ymin>81</ymin>
+            <xmax>216</xmax>
+            <ymax>518</ymax>
+        </bndbox>
+    </object>
+</annotation>

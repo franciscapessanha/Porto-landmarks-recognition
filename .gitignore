@@ -7,3 +7,5 @@ resized_dataset/divided_sets
 .vscode
 .pylintrc
 *.h5
+*.jpg
+*.png

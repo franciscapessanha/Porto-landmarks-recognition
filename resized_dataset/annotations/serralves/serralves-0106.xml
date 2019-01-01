@@ -1,0 +1,26 @@
+<annotation>
+    <folder>images</folder>
+    <filename>serralves-0106.jpg</filename>
+    <path>images/serralves-0106.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>600</width>
+        <height>327</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>serralves</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>173</xmin>
+            <ymin>86</ymin>
+            <xmax>459</xmax>
+            <ymax>173</ymax>
+        </bndbox>
+    </object>
+</annotation>

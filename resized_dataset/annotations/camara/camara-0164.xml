@@ -1,0 +1,26 @@
+<annotation>
+    <folder>images</folder>
+    <filename>camara-0164.jpg</filename>
+    <path>images/camara-0164.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>600</width>
+        <height>600</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>camara</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>254</xmin>
+            <ymin>24</ymin>
+            <xmax>318</xmax>
+            <ymax>209</ymax>
+        </bndbox>
+    </object>
+</annotation>
