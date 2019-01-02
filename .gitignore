@@ -9,3 +9,4 @@ resized_dataset/divided_sets
 *.h5
 *.jpg
 *.png
+__pycahce__/
