@@ -59,6 +59,20 @@ def resize_image(image, max_side = 600):
         new_height = int(h * (new_width/w))
     return cv.resize(image, (new_width, new_height))
 
+def label_folder(path):
+    load_resources()
+    save_path = path + '-labeled'
+    if not os.path.isdir(save_path):
+        os.mkdir(save_path)
+    for file in os.listdir(path):
+        if file.endswith('.png') or file.endswith('.jpg'):
+            image = cv.imread(os.path.join(path, file))
+            labeled_image = label_image(image)
+            cv.imwrite(os.path.join(save_path, file), labeled_image)
+            print('Labeled image %s.' % file)
+        else:
+            print('Ignoring file %s, not accepted image file.' % file)
+
 def label_image(image):
     # Expand image dimensions to have shape: [1, None, None, 3]
     image_expanded = np.expand_dims(image, axis=0)
@@ -101,23 +115,33 @@ def display_image(image, argv_input):
 
 def print_usage():
     print('Porto Monuments Image Recognition v0.1\n' +
-            '   usage: porto-image-recognition [image]\n')
+            '   usage: porto-image-recognition [image/directory]\n' + 
+            '       if image: displays on the screen and user is prompted to save to file\n' +
+            '       if directory: labels all images in directory root and saves them to new directory\n')
 
 def main():
     if len(sys.argv) > 2:
-        print('To many arguments passed.')
+        print('To many arguments passed.\n')
+        print_usage()
+        return
+    elif len(sys.argv) < 2:
+        print('To few arguments passed.\n')
         print_usage()
         return
     elif len(sys.argv) == 2:
-        image = load_image(sys.argv[1])
-        if image is None:
-            print('Image path does not exist.')
-            return
-        load_resources()
-        labeled_image = label_image(image)
-        display_image(labeled_image, sys.argv[1])
-
-
+        path = os.path.normpath(os.path.join(CWD_PATH, sys.argv[1]))
+        if os.path.isfile(path):
+            image = load_image()
+            if image is None:
+                print('Image path does not exist.')
+                return
+            load_resources()
+            labeled_image = label_image(image)
+            display_image(labeled_image, sys.argv[1])
+        elif os.path.isdir(path):
+            label_folder(path)
+        else:
+            print('Argument passed not image or folder.')
 
 if __name__ == "__main__":
     main()
