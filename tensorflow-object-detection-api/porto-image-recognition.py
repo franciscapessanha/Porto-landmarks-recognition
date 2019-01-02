@@ -111,8 +111,6 @@ def display_image(image, argv_input):
 
     cv.destroyAllWindows()
 
-
-
 def print_usage():
     print('Porto Monuments Image Recognition v0.1\n' +
             '   usage: porto-image-recognition [image/directory]\n' + 
@@ -131,7 +129,7 @@ def main():
     elif len(sys.argv) == 2:
         path = os.path.normpath(os.path.join(CWD_PATH, sys.argv[1]))
         if os.path.isfile(path):
-            image = load_image()
+            image = load_image(sys.argv[1])
             if image is None:
                 print('Image path does not exist.')
                 return
