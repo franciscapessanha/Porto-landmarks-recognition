@@ -27,9 +27,9 @@ def convert(size, box):
     h = h*dh
     return (x,y,w,h)
 
-def convert_annotation(image_set,label, image_id):
+def convert_annotation(image_set, image_id):
     #Box format: x_min,y_min,x_max,y_max,class_id (no space)
-    in_file = open('../dataset/divided_sets/annotations_%s/%s/%s.xml'%(image_set,label, image_id))    
+    in_file = open('../resized_dataset/divided_sets/%s/%s.xml'%(image_set, image_id))
     tree=ET.parse(in_file)
     root = tree.getroot()
     annotation = ''
@@ -40,7 +40,7 @@ def convert_annotation(image_set,label, image_id):
             continue
         cls_id = classes.index(cls)
         xmlbox = obj.find('bndbox')
-        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('ymin').text)), int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymax').text)))        
+        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('ymin').text)), int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymax').text)))
         annotation = annotation + ",".join([str(a) for a in b]) + ',' + str(cls_id) 
     
     return annotation
@@ -48,16 +48,15 @@ def convert_annotation(image_set,label, image_id):
 for image_set in sets:
     image_list = []
     annotations = []
-    for label in classes:            
-        image_ids = [f.split("/")[-1].replace('.xml','') for f in glob.glob('../dataset/divided_sets/annotations_%s/%s/*.xml' %(image_set,label))]
-        
-        for image_id in image_ids:
-            ann = convert_annotation(image_set, label, image_id)
-            annotations.append('../dataset/divided_sets/original_%s/%s/%s.jpg ' %(image_set,label,image_id) + ann)
+    image_ids = [f.split("/")[-1].replace('.xml','') for f in glob.glob('../resized_dataset/divided_sets/%s/*.xml' % image_set)]
+    
+    for image_id in image_ids:
+        ann = convert_annotation(image_set, image_id)
+        annotations.append('../resized_dataset/divided_sets/%s/%s.jpg ' %(image_set, image_id) + ann)
     
     if not os.path.exists('porto_dataset'):
         os.makedirs('porto_dataset')
-    
+
     with open('porto_dataset/annotations_%s.txt' % (image_set), 'w') as f:
         for item in np.hstack(annotations):
             f.write("%s\n" % item)
@@ -67,7 +66,7 @@ with open('porto_dataset/annotations_trainval.txt','w') as outfile:
     for fname in filenames:
         with open(fname) as infile:
             outfile.write(infile.read())
-            
+
 with open('porto_dataset/porto_classes.txt', 'w') as f:
     for item in np.hstack(classes):
         f.write("%s\n" % item)

@@ -6,8 +6,11 @@ resized_dataset/divided_sets
 .python-version
 .vscode
 .pylintrc
-*.h5
 *.jpg
 *.png
 __pycache__/
+<<<<<<< HEAD
 models
+=======
+keras-vgg16-classification/small_last4.h5
+>>>>>>> 92a05a32886c870223689e3839b385c69594d3cf
