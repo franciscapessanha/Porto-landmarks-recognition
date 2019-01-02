@@ -50,7 +50,6 @@ for image_set in sets:
     annotations = []
     for label in classes:            
         image_ids = [f.split("/")[-1].replace('.xml','') for f in glob.glob('../dataset/divided_sets/annotations_%s/%s/*.xml' %(image_set,label))]
-        #image_list.append([f for f in glob.glob('../dataset/divided_sets/original_%s/%s/image_id.jpg' %(image_set,label))])
         
         for image_id in image_ids:
             ann = convert_annotation(image_set, label, image_id)

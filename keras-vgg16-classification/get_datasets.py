@@ -179,24 +179,12 @@ def save_copy(path, label, folder_name):
     
     if not os.path.exists(path_arrabida):
         os.makedirs(path_arrabida)
-    else: 
-        os.system('rm '+ path_arrabida + "/*")
-    
     if not os.path.exists(path_camara):
         os.makedirs(path_camara)
-    else:
-        os.system('rm '+ path_camara+ "/*")
-    
     if not os.path.exists(path_clerigos):
         os.makedirs(path_clerigos)
-    else:
-        os.system('rm '+ path_clerigos + "/*")
-
     if not os.path.exists(path_musica):
         os.makedirs(path_musica)
-    else:
-        os.system('rm '+ path_musica + "/*")
-
     if not os.path.exists(path_serralves):
         os.makedirs(path_serralves)
     else:
@@ -264,13 +252,9 @@ for path,i in zip(x_test, range(len(x_test))):
     image = resize_images(image)
     save_image(path[0], image, y_test[i], "resized_test")
 
-
-#ACRESCENTAR ANOTAÇÕES QUE FALTAM
 print("4. Save original images by dataset")
 print("  4.1 Train")
 for path,i in zip(x_train, range(len(x_train))):
-    ann_path = path[0].replace("images", "annotations")
-    ann_path = ann_path.replace("jpg", "xml")
     if os.path.exists(ann_path):
         
         save_copy(ann_path, y_train[i], "annotations_train")
@@ -278,18 +262,12 @@ for path,i in zip(x_train, range(len(x_train))):
    
 print("  4.2 Validation")
 for path,i in zip(x_val, range(len(x_val))):
-    ann_path = path[0].replace("images", "annotations")
-    ann_path = ann_path.replace("jpg", "xml")
     if os.path.exists(ann_path):
-        save_copy(ann_path, y_val[i], "annotations_val")
         save_copy(path[0], y_val[i], "original_val")
 
 print("  4.3 Test")
 for path,i in zip(x_test, range(len(x_test))):
-    ann_path = path[0].replace("images", "annotations")
-    ann_path = ann_path.replace("jpg", "xml")
     if os.path.exists(ann_path):
-        save_copy(ann_path, y_test[i], "annotations_test")
         save_copy(path[0], y_test[i], "original_test")
 
 

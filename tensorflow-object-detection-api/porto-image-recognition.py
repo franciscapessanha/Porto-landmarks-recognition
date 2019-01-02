@@ -90,7 +90,7 @@ def label_image(image):
         category_index,
         use_normalized_coordinates=True,
         line_thickness=8,
-        min_score_thresh=0.8)
+        min_score_thresh=0.0)
 
     return image
 
