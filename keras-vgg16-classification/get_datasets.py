@@ -108,7 +108,6 @@ Arguments:
     * folder_name: name of the dataset
 """
 def save_image(path, image, label, folder_name):
-
     curr_path = os.getcwd()
     path_arrabida = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "arrabida"))
     path_camara = os.path.normpath(os.path.join(curr_path, "../dataset/divided_sets/", folder_name, "camara"))
@@ -118,28 +117,18 @@ def save_image(path, image, label, folder_name):
 
     if not os.path.exists(path_arrabida):
         os.makedirs(path_arrabida)
-    else: 
-        os.system('rm '+ path_arrabida + "/*")
     
     if not os.path.exists(path_camara):
         os.makedirs(path_camara)
-    else: 
-        os.system('rm '+ path_camara + "/*")
     
     if not os.path.exists(path_clerigos):
         os.makedirs(path_clerigos)
-    else: 
-        os.system('rm '+ path_clerigos + "/*")
         
     if not os.path.exists(path_musica):
             os.makedirs(path_musica)
-    else: 
-        os.system('rm '+ path_musica + "/*")
 
     if not os.path.exists(path_serralves):
             os.makedirs(path_serralves)
-    else: 
-        os.system('rm '+ path_serralves + "/*")
 
     if label == 0: #arrabida
         filename = path_arrabida + path[path.rindex('/'):]
@@ -179,28 +168,18 @@ def save_copy(path, label, folder_name):
     
     if not os.path.exists(path_arrabida):
         os.makedirs(path_arrabida)
-    else: 
-        os.system('rm '+ path_arrabida + "/*")
     
     if not os.path.exists(path_camara):
         os.makedirs(path_camara)
-    else:
-        os.system('rm '+ path_camara+ "/*")
     
     if not os.path.exists(path_clerigos):
         os.makedirs(path_clerigos)
-    else:
-        os.system('rm '+ path_clerigos + "/*")
 
     if not os.path.exists(path_musica):
         os.makedirs(path_musica)
-    else:
-        os.system('rm '+ path_musica + "/*")
 
     if not os.path.exists(path_serralves):
         os.makedirs(path_serralves)
-    else:
-        os.system('rm '+ path_serralves + "/*")
 
     if label == 0: #arrabida
         filename = path_arrabida + path[path.rindex('/'):]

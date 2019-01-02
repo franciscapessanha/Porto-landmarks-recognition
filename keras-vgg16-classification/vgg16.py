@@ -14,8 +14,8 @@ from keras import layers
 import matplotlib.pyplot as plt
 
 image_size = 224
-train_dir = '../dataset/divided_sets/train'
-validation_dir = '../dataset/divided_sets/train'
+train_dir = '../dataset/divided_sets/resized_train'
+validation_dir = '../dataset/divided_sets/resized_val'
 
 #Load the VGG model
 vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(image_size, image_size, 3))

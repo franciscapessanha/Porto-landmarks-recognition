@@ -6,7 +6,7 @@ resized_dataset/divided_sets
 .python-version
 .vscode
 .pylintrc
-*.h5
 *.jpg
 *.png
 __pycache__/
+keras-vgg16-classification/small_last4.h5
