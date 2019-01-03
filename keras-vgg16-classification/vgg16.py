@@ -12,13 +12,16 @@ from keras import optimizers
 from keras import models
 from keras import layers
 import matplotlib.pyplot as plt
+import numpy as np
+from keras.preprocessing.image import img_to_array, load_img
+from keras.applications import vgg16
 
 image_size = 224
-train_dir = '../dataset/divided_sets/resized_train'
-validation_dir = '../dataset/divided_sets/resized_val'
+train_dir = '../dataset/vgg16_resized_sets/train'
+validation_dir = '../dataset//vgg16_resized_sets/val'
 
 #Load the VGG model
-vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(image_size, image_size, 3))
+vgg_conv = VGG16(weights='imagenet', include_top=True, input_shape=(image_size, image_size, 3))
 
 # Freeze the layers except the last 4 layers
 for layer in vgg_conv.layers[:-4]:
@@ -107,4 +110,48 @@ plt.title('Training and validation loss')
 plt.legend()
  
 plt.show()
+
+# Create a generator for prediction
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(image_size, image_size),
+        batch_size=val_batchsize,
+        class_mode='categorical',
+        shuffle=False)
+ 
+# Get the filenames from the generator
+fnames = validation_generator.filenames
+ 
+# Get the ground truth from generator
+ground_truth = validation_generator.classes
+ 
+# Get the label to class mapping from the generator
+label2index = validation_generator.class_indices
+ 
+# Getting the mapping from class index to class label
+idx2label = dict((v,k) for k,v in label2index.items())
+ 
+# Get the predictions from the model using the generator
+predictions = model.predict_generator(validation_generator, steps=validation_generator.samples/validation_generator.batch_size,verbose=1)
+predicted_classes = np.argmax(predictions,axis=1)
+ 
+errors = np.where(predicted_classes != ground_truth)[0]
+print("No of errors = {}/{}".format(len(errors),validation_generator.samples))
+
+# Show the errors
+for i in range(len(errors)):
+    pred_class = np.argmax(predictions[errors[i]])
+    pred_label = idx2label[pred_class]
+     
+    title = 'Original label:{}, Prediction :{}, confidence : {:.3f}'.format(
+        fnames[errors[i]].split('/')[0],
+        pred_label,
+        predictions[errors[i]][pred_class])
+     
+    original = load_img('{}/{}'.format(validation_dir,fnames[errors[i]]))
+    plt.figure(figsize=[7,7])
+    plt.axis('off')
+    plt.title(title)
+    plt.imshow(original)
+    plt.show()
 

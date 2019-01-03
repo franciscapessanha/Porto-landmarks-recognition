@@ -9,36 +9,38 @@ from keras.models import load_model
 from keras.preprocessing.image import img_to_array, load_img
 from keras.applications.vgg16 import preprocess_input
 from keras.applications.vgg16 import decode_predictions
+from keras.applications import VGG16
+from keras.preprocessing.image import ImageDataGenerator
+from keras import optimizers
+from keras import models
+from keras import layers
+import matplotlib.pyplot as plt
+import numpy as np
+from keras.preprocessing.image import img_to_array, load_img
+from keras.applications import vgg16
+
+import glob
+import os
+
 
 model = load_model('small_last4.h5')
-model.summary()
-image = load_img('../dataset/divided_sets/resized_test/clerigos/clerigos-0575.jpg', target_size = (224,224))
-image = img_to_array(image)
-image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
-image = preprocess_input(image)
 
-a = model.predict(image)
-#print('%s (%.2f%%)' % (label[1], label[2]*100))
-"""
-from keras.preprocessing.image import img_to_array
-from keras.applications.vgg16 import preprocess_input
-from keras.applications.vgg16 import decode_predictions
-from keras.applications.vgg16 import VGG16
-# load the model
-model = VGG16()
-# load an image from file
-image = load_img('mug.jpg', target_size=(224, 224))
-# convert the image pixels to a numpy array
-image = img_to_array(image)
-# reshape data for the model
-image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
-# prepare the image for the VGG model
-image = preprocess_input(image)
-# predict the probability across all output classes
-yhat = model.predict(image)
-# convert the probabilities to class labels
-label = decode_predictions(yhat)
-# retrieve the most likely result, e.g. highest probability
-label = label[0][0]
-# print the classification
-print('%s (%.2f%%)' % (label[1], label[2]*100))"""
+
+curr_path = os.getcwd()
+set_path = os.path.normpath(os.path.join(curr_path, "../dataset/vgg16_resized_sets/test"))
+classes = os.listdir(set_path)
+
+predictions = []
+ground_truth = []
+for label in ['control']:
+    print(label)
+    image_ids = [f for f in glob.glob(os.path.join(set_path, '%s/*.jpg' % (label)))]
+    for image_id in image_ids:
+        image = load_img(image_id, target_size = (224,224))
+        image = img_to_array(image)
+        image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+        image = vgg16.preprocess_input(image)
+        preds = model.predict(image)
+        print('Predicted:', decode_predictions(preds, top=3)[0])
+        
+
