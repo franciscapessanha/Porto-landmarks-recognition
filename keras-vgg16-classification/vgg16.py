@@ -34,14 +34,11 @@ for layer in vgg_conv.layers:
 
 # Create the model
 model = models.Sequential()
- 
+
 # Add the vgg convolutional base model
-model.add(vgg_conv)
- 
-# Add new layers
-model.add(layers.Flatten())
-model.add(layers.Dense(1024, activation='relu'))
-model.add(layers.Dropout(0.5))
+for layer in vgg_conv.layers[:-1]: #Remove predictions layer (last layer)
+    model.add(layer)
+model.summary()
 model.add(layers.Dense(5, activation='softmax')) # 5 classes
  
 # Show a summary of the model. Check the number of trainable parameters

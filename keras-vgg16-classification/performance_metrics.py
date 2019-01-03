@@ -41,6 +41,6 @@ for label in ['control']:
         image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
         image = vgg16.preprocess_input(image)
         preds = model.predict(image)
-        print('Predicted:', decode_predictions(preds, top=3)[0])
+        print('Predicted:', decode_predictions(preds))
         
 
