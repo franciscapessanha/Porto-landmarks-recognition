@@ -34,8 +34,9 @@ Split data
 ==============================================================================
 Split the data in:
     * training set (70%)
-    * validation set (30%)
-    
+    * validation set (15%)
+    * training set (15%)
+
 Arguments:
     * x: images paths
     * y: images labels
@@ -48,9 +49,10 @@ Returns:
 
 """
 def split_data(x, y):
-    x_train, x_val, y_train, y_val = train_test_split(x, y, stratify=y, test_size=0.3)
+    x_train, xi_test, y_train, yi_test = train_test_split(x, y, stratify=y, test_size=0.3)
+    x_test, x_val, y_test, y_val = train_test_split(xi_test, yi_test, stratify=yi_test, test_size=0.5)
 
-    return x_train, y_train, x_val, y_val
+    return x_train, y_train, x_val, y_val, x_test, y_test
 
 """
 Save Annotations
@@ -96,9 +98,8 @@ def run():
     y = np.concatenate((y_arrabida, y_camara, y_clerigos, y_musica, y_serralves))
     
     print("2. Split into datasets (train, test)")
-    x_train, y_train, x_val, y_val = split_data(x,y)
+    x_train, y_train, x_val, y_val, x_test, y_test = split_data(x, y)
 
-    #ACRESCENTAR ANOTAÇÕES QUE FALTAM
     print("3. Save original images by dataset")
     print("  3.1 Train")
     for path in x_train:
@@ -113,5 +114,12 @@ def run():
         if os.path.exists(ann_path):
             save_copy(ann_path, "val")
             save_copy(path[0], "val")
+    
+    print("  3.3 Test")
+    for path in x_test:
+        ann_path = path[0].replace("images", "annotations").replace("jpg", "xml")
+        if os.path.exists(ann_path):
+            save_copy(ann_path, "test")
+            save_copy(path[0], "test")
 
 run()
