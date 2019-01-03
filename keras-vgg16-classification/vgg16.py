@@ -21,7 +21,7 @@ train_dir = '../dataset/vgg16_resized_sets/train'
 validation_dir = '../dataset//vgg16_resized_sets/val'
 
 #Load the VGG model
-vgg_conv = VGG16(weights='imagenet', include_top=True, input_shape=(image_size, image_size, 3))
+vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(image_size, image_size, 3))
 
 # Freeze the layers except the last 4 layers
 for layer in vgg_conv.layers[:-4]:
