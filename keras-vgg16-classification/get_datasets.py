@@ -55,7 +55,6 @@ def split_data(x, y):
     x_test, x_val, y_test, y_val = train_test_split(xi_test, yi_test, stratify=yi_test, test_size=0.5)
     
     return x_train, y_train, x_val, y_val, x_test, y_test
-    
 
 """
 Resize Image
