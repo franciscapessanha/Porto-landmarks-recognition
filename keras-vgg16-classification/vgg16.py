@@ -28,19 +28,20 @@ for layer in vgg_conv.layers:
     layer.trainable = False
  
 # Check the trainable status of the individual layers
-for layer in vgg_conv.layers[-4]:
+for layer in vgg_conv.layers:
     print(layer, layer.trainable)
     
 
 # Create the model
 model = models.Sequential()
 
-# Add the vgg convolutional base model
+# Add the vgg convolutional tbase model
 for layer in vgg_conv.layers[:-1]: #Remove predictions layer (last layer)
     model.add(layer)
 
+
 model.add(layers.Flatten())
-model.add(layers.Dense(1024, activation='relu'))
+model.add(layers.Dense(256, activation='relu'))
 model.add(layers.Dropout(0.5))
 model.add(layers.Dense(5, activation='softmax')) # 5 classes
 model.summary()
