@@ -22,9 +22,9 @@ validation_dir = '../dataset//vgg16_resized_sets/val'
 class_names = ['arrabida', 'camara', 'clerigos', 'musica']
 #Load the VGG model
 vgg_conv = VGG16(weights='imagenet', include_top=False, input_shape=(image_size, image_size, 3))
-
+vgg_conv.summary()
 # Freeze the layers except the last 4 layers
-for layer in vgg_conv.layers:
+for layer in vgg_conv.layers[:-4]:
     layer.trainable = False
  
 # Check the trainable status of the individual layers
@@ -35,16 +35,12 @@ for layer in vgg_conv.layers:
 # Create the model
 model = models.Sequential()
 
-# Add the vgg convolutional tbase model
-for layer in vgg_conv.layers[:-1]: #Remove predictions layer (last layer)
-    model.add(layer)
-
-
+model.add(vgg_conv)
 model.add(layers.Flatten())
 model.add(layers.Dense(256, activation='relu'))
 model.add(layers.Dropout(0.5))
 model.add(layers.Dense(5, activation='softmax')) # 5 classes
-model.summary()
+#model.summary()
 # Show a summary of the model. Check the number of trainable parameters
 model.summary()
 
@@ -83,7 +79,7 @@ model.compile(loss='categorical_crossentropy',
 history = model.fit_generator(
       train_generator,
       steps_per_epoch=train_generator.samples/train_generator.batch_size ,
-      epochs=30,
+      epochs=1,
       validation_data=validation_generator,
       validation_steps=validation_generator.samples/validation_generator.batch_size,
       verbose=1)
