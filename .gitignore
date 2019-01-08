@@ -12,3 +12,5 @@ __pycache__/
 models
 keras-vgg16-classification/small_last4.h5
 .code2pdf
+keras-yolo/output
+keras-yolo/model_data
