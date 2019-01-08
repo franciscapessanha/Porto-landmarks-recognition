@@ -1,9 +1,10 @@
 import os
 import numpy as np
 import cv2 as cv
-
+from keras.preprocessing.image import img_to_array, load_img
 import shutil
 import glob
+from keras.applications import vgg16
 
 sets = ['train', 'val', 'test']
 """
@@ -19,7 +20,7 @@ Returns:
     * resized_set : resized dataset
 """  
 def resize_images(image, h_size = 224, w_size = 224): #shape images ImageNet    
-
+    """
     h, w, _ = image.shape
     for scale in np.arange(2.0, 0.0, -0.005):
         if w * scale <= w_size and h * scale <= h_size:
@@ -43,6 +44,11 @@ def resize_images(image, h_size = 224, w_size = 224): #shape images ImageNet
         b_right = int((w_size - new_w) - b_left)
         
     resized_image = cv.copyMakeBorder(image, top = b_top,bottom = b_bot, left = b_left, right = b_right, borderType = cv.BORDER_CONSTANT, value = [0,0,0])   
+    """
+    #image = load_img(image_id, target_size = (224,224))
+    image = img_to_array(image)
+    image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+    resized_image = vgg16.preprocess_input(image)
     return resized_image
 
 """
