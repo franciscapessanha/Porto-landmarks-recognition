@@ -5,7 +5,7 @@ Created on Fri Dec 28 13:37:48 2018
 
 @author: mariafranciscapessanha
 """
-#https://www.learnopencv.com/keras-tutorial-fine-tuning-using-pre-trained-models/
+
 from keras.applications import VGG16
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
@@ -13,8 +13,13 @@ from keras import models
 from keras import layers
 import matplotlib.pyplot as plt
 import numpy as np
-from keras.preprocessing.image import img_to_array, load_img
-from keras.applications import vgg16
+from keras.preprocessing.image import load_img
+
+"""
+VGG-16 Model
+=============
+Reference: https://www.learnopencv.com/keras-tutorial-fine-tuning-using-pre-trained-models/
+"""
 
 image_size = 224
 train_dir = '../dataset/vgg16_resized_sets/train'
@@ -40,7 +45,6 @@ model.add(layers.Flatten())
 model.add(layers.Dense(256, activation='relu'))
 model.add(layers.Dropout(0.5))
 model.add(layers.Dense(5, activation='softmax')) # 5 classes
-#model.summary()
 # Show a summary of the model. Check the number of trainable parameters
 model.summary()
 
