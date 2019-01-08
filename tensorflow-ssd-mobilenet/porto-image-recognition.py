@@ -5,11 +5,11 @@ import numpy as np
 import tensorflow as tf
 import sys
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 # Import utilites
 from utils import label_map_util
 from utils import visualization_utils as vis_util
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Grab path to current working directory
 CWD_PATH = os.getcwd()
@@ -19,11 +19,8 @@ PATH_TO_LABELS = os.path.join(CWD_PATH, 'data', 'labels.pbtxt')
 
 TF_SESSION, image_tensor, detection_boxes, detection_scores, detection_classes, num_detections, category_index = None, None, None, None, None, None, None
 
-TF_SESSION_VIEWPOINT, viewpoint_graph, viewpoint_labels = None, None, None
-
 def load_resources():
     global TF_SESSION, image_tensor, detection_boxes, detection_scores, detection_classes, num_detections, category_index
-
     # Load the label
     label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
     categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=5, use_display_name=True)
@@ -47,9 +44,6 @@ def load_resources():
     detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
     num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 
-    # Loads graph and labels for viewpoint detection
-    load_graph("../models/mobilenet_musica.pb")
-
 def load_image(image_name):
     path = os.path.normpath(os.path.join(CWD_PATH, image_name))
     if not os.path.isfile(path):
@@ -57,7 +51,6 @@ def load_image(image_name):
     image = cv.imread(path)
     return image
 
-# resizes de image to have max side of 600
 def resize_image(image, max_side = 600):
     h, w, _ = image.shape
     if h > w:
@@ -75,72 +68,19 @@ def label_folder(path):
         os.mkdir(save_path)
     for file in os.listdir(path):
         if file.endswith('.png') or file.endswith('.jpg'):
-            labeled_image = label_image(os.path.join(path, file))
+            image = cv.imread(os.path.join(path, file))
+            labeled_image = label_image(image)
             cv.imwrite(os.path.join(save_path, file), labeled_image)
             print('Labeled image %s.' % file)
         else:
             print('Ignoring file %s, not accepted image file.' % file)
 
-def load_graph(model_file):
-  global TF_SESSION_VIEWPOINT, viewpoint_graph, viewpoint_labels
-  viewpoint_labels = load_labels("../tensorflow-mobilenet-classification/data/labels_musica.txt")
-  viewpoint_graph = tf.Graph()
-  graph_def = tf.GraphDef()
-
-  with viewpoint_graph.as_default():
-      with open(model_file, "rb") as f:
-        graph_def.ParseFromString(f.read())
-      with viewpoint_graph.as_default():
-        tf.import_graph_def(graph_def)
-      
-      TF_SESSION_VIEWPOINT = tf.Session(graph=viewpoint_graph)
-
-def load_labels(label_file):
-  label = []
-  proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
-  for l in proto_as_ascii_lines:
-    label.append(l.rstrip())
-  return label
-
-def read_tensor_from_image_file(file_name):
-  file_reader = tf.read_file(file_name, "file_reader")
-  if file_name.endswith(".png"):
-    image_reader = tf.image.decode_png(file_reader, channels=3, name="png_reader")
-  else:
-    image_reader = tf.image.decode_jpeg(file_reader, channels=3, name="jpeg_reader")
-  float_caster = tf.cast(image_reader, tf.float32)
-  dims_expander = tf.expand_dims(float_caster, 0)
-  resized = tf.image.resize_bilinear(dims_expander, [299, 299])
-  normalized = tf.divide(tf.subtract(resized, [0]), [255])
-  result = TF_SESSION_VIEWPOINT.run(normalized)
-
-  return result
-
-def print_viewpoint(path):
-    t = read_tensor_from_image_file(path)
-
-    results = np.squeeze(TF_SESSION_VIEWPOINT.run(viewpoint_graph.get_operation_by_name("import/final_result").outputs[0], {
-        viewpoint_graph.get_operation_by_name("import/Placeholder").outputs[0]: t
-    }))
-
-    top_k = results.argsort()[-5:][::-1]
-
-    if results[0] > 0.0:
-        print('Viewpoint: ' + viewpoint_labels[i])
-    else:
-        print('No viewpoint detected')
-
-def label_image(path):
-    image = cv.imread(path)
-
+def label_image(image):
     # Expand image dimensions to have shape: [1, None, None, 3]
     image_expanded = np.expand_dims(image, axis=0)
 
     # Perform the detection
     (boxes, scores, classes, num) = TF_SESSION.run([detection_boxes, detection_scores, detection_classes, num_detections], feed_dict={image_tensor: image_expanded})
-
-    if int(classes[0][0]) == 2:
-        print_viewpoint(path)
 
     image = resize_image(image)
     # Draw the results of the detection (aka 'visualize the results')
@@ -191,8 +131,12 @@ def main():
     elif len(sys.argv) == 2:
         path = os.path.normpath(os.path.join(CWD_PATH, sys.argv[1]))
         if os.path.isfile(path):
+            image = load_image(sys.argv[1])
+            if image is None:
+                print('Image path does not exist.')
+                return
             load_resources()
-            labeled_image = label_image(sys.argv[1])
+            labeled_image = label_image(image)
             display_image(labeled_image, sys.argv[1])
         elif os.path.isdir(path):
             label_folder(path)
