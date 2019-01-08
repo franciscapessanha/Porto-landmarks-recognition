@@ -87,7 +87,6 @@ history = model.fit_generator(
 # Save the model
 model.save('small_last4.h5')
 
-"""
 acc = history.history['acc']
 val_acc = history.history['val_acc']
 loss = history.history['loss']
@@ -152,4 +151,4 @@ for i in range(len(errors)):
     plt.title(title)
     plt.imshow(original)
     plt.show()
-"""
+

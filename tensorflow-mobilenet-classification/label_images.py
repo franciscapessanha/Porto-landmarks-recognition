@@ -136,13 +136,34 @@ if __name__ == "__main__":
         result_file.write(output + "\n")
         print(output)
 
-confusion_matrix = confusion_matrix(ground_truth, prediction)
+c_matrix = confusion_matrix(ground_truth, prediction, labels = ['serralves', 'camara', 'arrabida', 'clerigos', 'control', 'musica'] )
 
 print(confusion_matrix)
+#%%%
+print(c_matrix)
+FP = c_matrix.sum(axis=0) - np.diag(c_matrix)  
+FN = c_matrix.sum(axis=1) - np.diag(c_matrix)
+TP = np.diag(c_matrix)
+TN = sum(c_matrix.ravel())- (FP + FN + TP)
 
-FP = confusion_matrix.sum(axis=0) - np.diag(confusion_matrix)  
-FN = confusion_matrix.sum(axis=1) - np.diag(confusion_matrix)
-TP = np.diag(confusion_matrix)
-TN = confusion_matrix.sum() - (FP + FN + TP)
+accuracy = []
+precision = []
+recall = []
 
-print("TP: %d, FP: %d, TN: %d, FN: %d" % (TP, FP, TN, FN))
+accuracy = (TP + TN)/(TP + TN + FP + FN)
+precision = TP/(TP + FP)
+recall = TP/(TP + FN)
+
+acc_global = (sum(TP) + sum(TN))/(sum(TP)  + sum(TN)  + sum(FP)  + sum(FN))
+precision_global = sum(TP) /(sum(TP)  + sum(FP))
+recall_global = sum(TP) /(sum(TP) + sum(FN))
+
+classes = ['Serralves', 'Camara', 'Arrabida', 'Clerigos', 'Control', 'Musica']
+
+for i in range(len(classes)):
+    print(classes[i])
+    print("=================")
+    print("Accuracy = %.2f \nPrecision = %.2f \nRecall = %.2f \n" % (accuracy[i],precision[i], recall[i]))
+
+print("Global Metrics\n=================")
+print("Accuracy = %.2f \nPrecision = %.2f \nRecall = %.2f \n" % (acc_global,precision_global, recall_global))
