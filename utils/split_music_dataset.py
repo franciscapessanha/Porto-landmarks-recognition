@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import cv2 as cv
 from sklearn.model_selection import train_test_split
 import shutil
 

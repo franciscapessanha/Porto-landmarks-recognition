@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan  2 19:57:23 2019
-
-@author: mariafranciscapessanha
-"""
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array, load_img
 import numpy as np

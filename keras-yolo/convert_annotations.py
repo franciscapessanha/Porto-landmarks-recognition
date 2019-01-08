@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 28 19:20:11 2018
-
-@author: mariafranciscapessanha
-"""
-
 import xml.etree.ElementTree as ET
 import numpy as np
 import os
@@ -14,6 +6,9 @@ import glob
 sets=['train', 'val', 'test']
 classes = ['serralves', 'musica', 'clerigos', 'camara', 'arrabida']
 
+"""
+It will convert VOC annotations
+"""
 def convert(size, box):
     dw = 1./size[0]
     dh = 1./size[1]

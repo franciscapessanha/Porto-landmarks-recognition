@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 28 13:37:48 2018
-
-@author: mariafranciscapessanha
-"""
-
 from keras.applications import VGG16
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
