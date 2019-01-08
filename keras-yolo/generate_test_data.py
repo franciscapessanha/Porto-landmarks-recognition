@@ -6,6 +6,7 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import os
 import glob
+import time
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -19,6 +20,7 @@ def display_image(image):
     cv.destroyAllWindows()
 
 def label_folder(yolo):
+    start = time.time()
     save_path = '../resized_dataset/labeled/yolo'
     if not os.path.isdir(save_path):
         os.mkdir(save_path)
@@ -28,6 +30,8 @@ def label_folder(yolo):
     #     file = file_names[i]
         labeled_image = label_image(file, yolo)
         cv.imwrite(save_path + '/' + file.split("/")[-1], labeled_image)
+    end = time.time()
+    print('Elapsed time: %f' % (end - start))
 
 def get_iou(pred_xmin, pred_ymin, pred_xmax, pred_ymax, gt_xmin, gt_ymin, gt_xmax, gt_ymax):
     assert pred_xmin < pred_xmax
