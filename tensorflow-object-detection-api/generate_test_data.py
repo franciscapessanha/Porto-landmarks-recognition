@@ -6,6 +6,7 @@ import tensorflow as tf
 import sys
 import glob
 import xml.etree.ElementTree as ET
+import time
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -67,15 +68,18 @@ def resize_image(image, max_side = 600):
 
 def label_folder():
     load_resources()
-    save_path = 'test-labeled'
+    save_path = '../resized_dataset/labeled/ssd_mobilenet'
     if not os.path.isdir(save_path):
         os.mkdir(save_path)
     file_names = glob.glob('../resized_dataset/divided_sets/test/*.jpg')
+    start = time.time()
     for file in file_names:
     # for i in range(3, 6):
     #     file = file_names[i]
         labeled_image = label_image(file)
         cv.imwrite(save_path + '/' + file.split("/")[-1], labeled_image)
+    end = time.time()
+    print('Elapsed time: %f' % (end - start))
 
 def decode_label(index):
     return ['serralves', 'musica', 'arrabida', 'clerigos', 'camara'][int(index) - 1] if int(index) > 0 else 'control'

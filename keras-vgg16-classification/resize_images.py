@@ -42,8 +42,17 @@ def resize_images(image, h_size = 224, w_size = 224): #shape images ImageNet
         b_right = int((w_size - new_w) - b_left)
         
     resized_image = cv.copyMakeBorder(image, top = b_top,bottom = b_bot, left = b_left, right = b_right, borderType = cv.BORDER_CONSTANT, value = [0,0,0])   
+<<<<<<< HEAD
   
     return resized_image
+=======
+    """
+    #image = load_img(image_id, target_size = (224,224))
+    image = img_to_array(image)
+    image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+    resized_image = vgg16.preprocess_input(image)
+    return np.squeeze(resized_image)
+>>>>>>> a41b04b386d588c56348880b49fcac7ae309b32d
 
 """
 Save Image
