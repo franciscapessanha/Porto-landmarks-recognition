@@ -126,8 +126,8 @@ for label,i in zip(classes, range(len(classes))):
         image = img_to_array(image)
         image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
         image = vgg16.preprocess_input(image)
-        predictions.append(model.predict_classes(image)[0])
-        #print('Predicted:', preds)
+        predictions.append(model.predict(image)[0])
+        print('Predicted:', predictions)
 
 ground_truth = np.hstack(ground_truth)
 ground_truth = [int(gt) for gt in ground_truth]

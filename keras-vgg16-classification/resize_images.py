@@ -49,7 +49,7 @@ def resize_images(image, h_size = 224, w_size = 224): #shape images ImageNet
     image = img_to_array(image)
     image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
     resized_image = vgg16.preprocess_input(image)
-    return resized_image
+    return np.squeeze(resized_image)
 
 """
 Save Image
